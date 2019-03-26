@@ -10,12 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_25_221002) do
+ActiveRecord::Schema.define(version: 2019_03_26_182136) do
 
   create_table "tv_shows", force: :cascade do |t|
     t.string "name"
     t.string "weekday"
     t.string "genre"
+    t.text "summary"
   end
 
   create_table "viewer_shows", force: :cascade do |t|
