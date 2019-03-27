@@ -1,7 +1,7 @@
 require 'pry'
 class CommandLineInterface
 
-  attr_accessor :current_viewer
+  attr_accessor :current_viewer, :yes_no
 
   def initialize
     @current_viewer = nil
@@ -58,40 +58,68 @@ class CommandLineInterface
     end
   end
 
+
   def show_list(input)
     puts "Looks like you're watching a #{input}. Pick one for more info.."
     shows = TvShow.where(genre: input)
       shows.each_with_index do |show, index|
          puts "#{index+1}. #{show.name}"
       end
-    show = gets.chomp
+      gets_show(input)
   end
+
+  def show_list_loop
+    while confirm_watch != "y"
+      case @yes_no
+      when "n"
+        show_list(input)
+      else
+        break
+      end
+    end
+  end
+
+
+  def gets_show(genre)
+    @show = gets.chomp
+    show_bio(@show, genre)
+  end
+
+
+  def show_bio(gets_show, genre)
+    days = {
+      "1" => "Sunday",
+      "2" => "Monday",
+      "3" => "Tuesday",
+      "4" => "Wednesday",
+      "5" => "Thursday"
+    }
+    tv = TvShow.find_by(weekday: days[gets_show], genre: genre)
+    puts tv.summary
+    want_to_watch_show
+  end
+
+  def confirm_watch
+    @yes_no = gets.chomp
+  end
+
+  def want_to_watch_show
+    puts "Would you like to watch this? (y/n)"
+    confirm_watch
+    if @yes_no == "y"
+      puts "Ummmmm we're not a freaking streaming service!!!"
+      puts "Go to Netflix..."
+    elsif @yes_no == "n"
+      puts "Aiiiiight you're going back to the show list"
+      show_list(input)
+    end
+  end
+
+
 
   def fyre_fest
     puts "No show for you! You're watching FYYYREEEEE FESTIVALLLLLL"
   end
-
-  def bios(input)
-    if input == "1"
-      show_bio(weekday: "Sunday")
-    elsif input == "2"
-      show_bio("Comedy")
-    elsif input == "3"
-      show_bio("Action")
-    elsif input == "4"
-      show_bio("Romance")
-    elsif input == "5"
-      fyre_fest
-    end
-  end
-  #
-  def show_bio(input)
-
-
-  end
-
-
-
 
 
 
