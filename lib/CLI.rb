@@ -63,45 +63,33 @@ class CommandLineInterface
     shows = TvShow.where(genre: input)
       shows.each_with_index do |show, index|
          puts "#{index+1}. #{show.name}"
-         binding.pry
       end
     show = gets.chomp
   end
 
-
   def fyre_fest
-    puts "Looks like you're watching FYYYREEEEE"
+    puts "No show for you! You're watching FYYYREEEEE FESTIVALLLLLL"
   end
 
+  def bios(input)
+    if input == "1"
+      show_bio(weekday: "Sunday")
+    elsif input == "2"
+      show_bio("Comedy")
+    elsif input == "3"
+      show_bio("Action")
+    elsif input == "4"
+      show_bio("Romance")
+    elsif input == "5"
+      fyre_fest
+    end
+  end
+  #
+  def show_bio(input)
 
 
+  end
 
-
-# every time someone picks a mood, we call this method
-  # def print_happy_shows
-  #     puts "Looks like you're watching a drama"
-  #     shows = TvShow.where(genres: "Drama")
-  #       shows.each do |show|
-  #          puts "1. #{show.name}"
-  #          puts "2. #{show.name}"
-  #          puts "3. #{show.name}"
-  #          puts "4. #{show.name}"
-  #          puts "5. #{show.name}"
-  #       end
-  #     # shows = gets.chomp
-  # end
-
-
-  # def print_sad_shows(input)
-  #   puts "Looks like you're watching a comedy"
-  #     comedy = TvShow.where(genres: "Comedy")
-  #       puts "1. #{comedy}"
-  #       # "2. #{comedy}"
-  #       # "3. #{comedy}"
-  #       # "4. #{comedy}"
-  #       # "5. #{comedy}"
-  #       shows = gets.chomp
-  # end
 
 
 
