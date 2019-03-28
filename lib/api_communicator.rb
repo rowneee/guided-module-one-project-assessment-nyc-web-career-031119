@@ -20,3 +20,12 @@ def get_shows_from_api(input)
 
 
 end
+
+# player = Audite.new
+#
+# 
+#
+# player.load('./Music/The Office.mp3')
+# player.start_stream
+# player.forward(20)
+# player.thread.join
