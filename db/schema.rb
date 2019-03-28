@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_26_182136) do
+ActiveRecord::Schema.define(version: 2019_03_27_210619) do
 
   create_table "tv_shows", force: :cascade do |t|
     t.string "name"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_182136) do
 
   create_table "viewer_shows", force: :cascade do |t|
     t.integer "viewer_id"
-    t.integer "tvshow_id"
+    t.integer "tv_show_id"
     t.float "rating"
   end
 
