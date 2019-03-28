@@ -2,7 +2,7 @@ require 'pry'
 require 'audite'
 class CommandLineInterface
 
-  attr_accessor :current_viewer, :current_tv_show, :yes_no, :tv
+  attr_accessor :current_viewer, :current_tv_show, :yes_no, :tv, :favorites
   def initialize
     @current_viewer = nil
   end
@@ -149,36 +149,47 @@ class CommandLineInterface
     line_break
     view_favs = gets.chomp
     line_break
-     if view_favs == "y"
+    if view_favs == "y"
+      @favorites = @current_viewer.tv_shows.map do |show|
+        show.name
+      end
+      puts @favorites.uniq!
+      line_break
+      remove_from_favorites
+    else
+      what_next
+    end
+ end
 
-       test = Viewer.find(@current_viewer.id).tv_shows.map do |show|
+ def remove_from_favorites
+   puts "Would you like to remove a show from your list? (y/n)"
+   remove = gets.chomp
+     if remove == "y"
+       puts @favorites
+       line_break
+       puts "What show do you want to remove. Enter Below:"
+       specified_show = gets.chomp
+       v_show = TvShow.find_by(name: specified_show)
+       vs = ViewerShow.find_by(viewer_id: @current_viewer.id, tv_show_id: v_show.id)
+       vs.destroy
+       line_break
+       puts "Here is your updated list:"
+       line_break
+       @favorites = @current_viewer.reload.tv_shows.map do |show|
          show.name
        end
-
-        puts test
-        line_break
-       # view_show_list = ViewerShow.all.select do |viewer_show|
-       #       viewer_show.viewer_id == @current_viewer.id
-       # end
-
-
+       puts @favorites.uniq
+       line_break
+       #Viewer.find_by(name: viewer_name)
      else
        what_next
      end
- end
-
-
-
-
-
-  def delete
-    @current_viewer.tv_shows()
   end
 
-
-
-
-
+  # def show_delete
+  #   tv_shows = @current_viewer.tv_shows
+  #   tv_shows.find(@current_tv_show.id).destroy
+  # end
 
  def what_next
    puts "Okay then what do you want to do next idiot?"
@@ -192,20 +203,19 @@ class CommandLineInterface
  end
 
 
+ def fyre_fest
+   puts "Did you think we were about to redirect you to the FYRE Festival documentary?"
+   puts "You should bye ashamed of yourself"
+   puts "You just got..."
+   ja_ruled
+   puts "You are now banned from GitFlix. Goodbye."
+   exit
+ end
 
-  def fyre_fest
-    puts "Did you think we were about to redirect you to the FYRE Festival documentary?"
-    puts "You should bye ashamed of yourself"
-    puts "You just got..."
-    ja_ruled
-    puts "You are now banned from GitFlix. Goodbye."
-    exit
-  end
 
-
-  def graphic
+ def graphic
     music("./Music/The Office.mp3")
-puts "
+    puts "
         GGGGGGGGGGGGG  iiii          tttt          FFFFFFFFFFFFFFFFFFFFFFlllllll   iiii
      GGG::::::::::::G i::::i      ttt:::t          F::::::::::::::::::::Fl:::::l  i::::i
    GG:::::::::::::::G  iiii       t:::::t          F::::::::::::::::::::Fl:::::l   iiii
