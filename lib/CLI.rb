@@ -120,7 +120,6 @@ class CommandLineInterface
               elsif
                 show.tv_show_id != @current_tv_show.id
                 favorites_list = ViewerShow.create(viewer_id: @current_viewer.id, tv_show_id: @current_tv_show.id, rating: review_input)
-                binding.pry
                 favorites_list += @current_tv_show.name
               end
             end
@@ -131,14 +130,12 @@ class CommandLineInterface
               favorites_list
             else
               puts "Ok then please leave"
-              #exit
+              exit
             end
 
           else
-            puts "Would you like to watch another show (y/n)"
-            watch_another = gets.chomp
-              #if yes redirect to show list
-              #if no then exit
+            puts "Ok then please get out of here. This is ridiculous"
+            exit
           end
     elsif @yes_no == "n"
       puts "Aiiiiight you're going back to the show list"
@@ -146,13 +143,10 @@ class CommandLineInterface
   end
 
 
-
-
-
   def fyre_fest
     puts "No show for you! You're watching FYYYREEEEE FESTIVALLLLLL"
     puts "But also, we're not a streaming service so please leave now."
+      exit
   end
-
 
 end
