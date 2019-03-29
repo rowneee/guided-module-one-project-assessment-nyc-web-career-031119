@@ -26,7 +26,6 @@ class CommandLineInterface
 
   def login
     viewer_name = gets.chomp
-    # if !valid?(viewer_name)
     @current_viewer = Viewer.find_by(name: viewer_name)
     line_break
     if @current_viewer
@@ -53,7 +52,7 @@ class CommandLineInterface
     line_break
     puts "  4) Honestly no idea"
     line_break
-    puts "  5) BAMBOOZLED" #fyre
+    puts "  5) BAMBOOZLED"
     line_break
   end
 
@@ -134,23 +133,31 @@ class CommandLineInterface
     puts "-----------------------------------------"
     line_break
     confirm_watch
+    yes_no
+  end
+
+  def yes_no
     if @yes_no == "y"
       not_streaming
       puts "On a scale of 1 - 10, what is the likelihood of you actually watching this s***? Dont lie."
       line_break
-      review_input = gets.chomp.to_f
-        if review_input >= 7
-          viewer_show = ViewerShow.find_or_create_by(viewer_id: @current_viewer.id, tv_show_id: @current_tv_show.id, rating: review_input)
-          # viewer_show.update(rating: review_input)
-          redirect_to_favorites
-        else
-          line_break
-          dun_dun
-          line_break
-        end
+      review_input
     elsif @yes_no == "n"
       line_break
       what_next
+    end
+  end
+
+  def review_input
+    review_input = gets.chomp.to_f
+    if review_input >= 7
+      viewer_show = ViewerShow.find_or_create_by(viewer_id: @current_viewer.id, tv_show_id: @current_tv_show.id, rating: review_input)
+      # viewer_show.update(rating: review_input)
+      redirect_to_favorites
+    else
+      line_break
+      dun_dun
+      line_break
     end
   end
 
@@ -163,18 +170,23 @@ class CommandLineInterface
     puts "Would you like to view your dumb list? (y/n)"
     puts "--------------------------------------------"
     line_break
-    view_favs = gets.chomp
-    if view_favs == "y"
-      @favorites = @current_viewer.tv_shows.map do |show|
-        show.name
-      end
-      puts @favorites.uniq!
-      line_break
-      remove_from_favorites
-    else
-      line_break
-      what_next
-    end
+    view_favs
+ end
+
+ def view_favs
+   view_favs = gets.chomp
+   if view_favs == "y"
+     @favorites = @current_viewer.tv_shows.map do |show|
+       show.name
+     end
+     line_break
+     puts @favorites.uniq!
+     line_break
+     remove_from_favorites
+   else
+     line_break
+     what_next
+   end
  end
 
  def remove_from_favorites
@@ -207,15 +219,11 @@ class CommandLineInterface
        end
     else
       puts "Well, my dude. Looks like you dont have a favorites list yet."
+      puts "If you want one then go back to the show list and add another show."
       line_break
       what_next
     end
   end
-
-  # def show_delete
-  #   tv_shows = @current_viewer.tv_shows
-  #   tv_shows.find(@current_tv_show.id).destroy
-  # end
 
  def what_next
    puts "What do you want to do next, idiot?"
@@ -233,7 +241,6 @@ class CommandLineInterface
     end
   line_break
  end
-
 
  def fyre_fest
    puts "Did you think we were about to redirect you to the FYRE Festival documentary?"
