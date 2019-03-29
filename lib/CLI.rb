@@ -17,6 +17,7 @@ class CommandLineInterface
   end
 
   def login_greeting
+    line_break
     puts "                               Welcome to Gitflix. Your best guide to trash TV."
     puts "                                     Please enter your name to login:"
     line_break
@@ -29,9 +30,11 @@ class CommandLineInterface
     @current_viewer = Viewer.find_by(name: viewer_name)
     line_break
     if @current_viewer
-      puts "Welcome back, #{@current_viewer.name}"
+      puts "Welcome back, #{@current_viewer.name}. You have something on your nose."
+      puts "----------------------------------------------------"
     elsif @current_viewer = Viewer.create(name: viewer_name)
       puts "Welcome #{viewer_name}. We hate you."
+      puts "---------------------------"
     end
     greet
   end
@@ -40,11 +43,17 @@ class CommandLineInterface
   def greet
     line_break
     puts "How you feeling today?"
-    puts "1. Annoyed" # corresponds to a genre
-    puts "2. Still searching for friends" # corresponds to a genre
-    puts "3. OVER IT" # corresponds to a genre
-    puts "4. Honestly no idea" # gives you a list of genre
-    puts "5. BAMBOOZLED" #fyre
+    puts "----------------------"
+    line_break
+    puts "  1) Annoyed"
+    line_break
+    puts "  2) Still searching for friends"
+    line_break
+    puts "  3) OVER IT"
+    line_break
+    puts "  4) Honestly no idea"
+    line_break
+    puts "  5) BAMBOOZLED" #fyre
     line_break
   end
 
@@ -78,12 +87,14 @@ class CommandLineInterface
 
   def show_list(genre)
       line_break
-      puts "You are watching a #{genre}. Pick one for more info...(or die)"
+      puts "You are watching a #{genre}. Pick one for more info, or die.."
+      puts "------------------------------------------------------------"
+      line_break
       shows = TvShow.where(genre: genre)
       shows.each_with_index do |show, index|
-         puts "#{index+1}. #{show.name}"
+         puts " #{index+1}) #{show.name}"
+         line_break
       end
-      line_break
       gets_show(genre)
   end
 
@@ -93,7 +104,6 @@ class CommandLineInterface
   end
 
   def show_bio(gets_show, genre)
-    line_break
     days = {
       "1" => "Sunday",
       "2" => "Monday",
@@ -102,9 +112,9 @@ class CommandLineInterface
       "5" => "Thursday"
     }
     @current_tv_show = TvShow.find_by(weekday: days[gets_show], genre: genre)
+    line_break
     puts @current_tv_show.summary
     want_to_watch_show
-    what_next
   end
 
   def confirm_watch
@@ -115,11 +125,13 @@ class CommandLineInterface
     gitflix_not_netflix
     line_break
     puts "We're not a freaking streaming service!!!!!!! We're just here to tell you how trash you are."
+    line_break
   end
 
   def want_to_watch_show
     line_break
     puts "Would you like to watch this trash? (y/n)"
+    puts "-----------------------------------------"
     line_break
     confirm_watch
     if @yes_no == "y"
@@ -132,23 +144,26 @@ class CommandLineInterface
           # viewer_show.update(rating: review_input)
           redirect_to_favorites
         else
-          puts "Well thats unfortunate!"
-          # redirect somewhere
+          line_break
+          dun_dun
+          line_break
         end
     elsif @yes_no == "n"
-      puts "Aighhhhht idiot. Pick another one"
+      line_break
+      what_next
     end
   end
 
   def redirect_to_favorites
     line_break
-    puts "Okay punk. We're just going to go ahead and add this to your list."
-    puts "Feel free to watch this on Netflix, or Hulu, or Amazon. Honestly we don't care.."
+    puts "Okay punk. We're just going to go ahead and add this to your favorites"
+    line_break
+    puts "Feel free to watch this on Netflix, or Hulu, or Amazon. Bottom line, you can't watch it here."
     line_break
     puts "Would you like to view your dumb list? (y/n)"
+    puts "--------------------------------------------"
     line_break
     view_favs = gets.chomp
-    line_break
     if view_favs == "y"
       @favorites = @current_viewer.tv_shows.map do |show|
         show.name
@@ -157,33 +172,44 @@ class CommandLineInterface
       line_break
       remove_from_favorites
     else
+      line_break
       what_next
     end
  end
 
  def remove_from_favorites
-   puts "Would you like to remove a show from your list? (y/n)"
-   remove = gets.chomp
-     if remove == "y"
-       puts @favorites
-       line_break
-       puts "What show do you want to remove. Enter Below:"
-       specified_show = gets.chomp
-       v_show = TvShow.find_by(name: specified_show)
-       vs = ViewerShow.find_by(viewer_id: @current_viewer.id, tv_show_id: v_show.id)
-       vs.destroy
-       line_break
-       puts "Here is your updated list:"
-       line_break
-       @favorites = @current_viewer.reload.tv_shows.map do |show|
-         show.name
+   if @favorites.length > 1
+     puts "Would you like to remove a show from your list? (y/n)"
+     puts "-----------------------------------------------------"
+     line_break
+     remove = gets.chomp
+       if remove == "y"
+         puts @favorites
+         line_break
+         puts "What show do you want to remove. Enter Below:"
+         puts "---------------------------------------------"
+         specified_show = gets.chomp
+         v_show = TvShow.find_by(name: specified_show)
+         vs = ViewerShow.find_by(viewer_id: @current_viewer.id, tv_show_id: v_show.id)
+         vs.destroy
+         line_break
+         puts "Here is your updated list:"
+         puts "--------------------------"
+         line_break
+         @favorites = @current_viewer.reload.tv_shows.map do |show|
+           show.name
+         end
+         puts @favorites.uniq
+         line_break
+         what_next
+       else
+         what_next
        end
-       puts @favorites.uniq
-       line_break
-       #Viewer.find_by(name: viewer_name)
-     else
-       what_next
-     end
+    else
+      puts "Well, my dude. Looks like you dont have a favorites list yet."
+      line_break
+      what_next
+    end
   end
 
   # def show_delete
@@ -192,14 +218,20 @@ class CommandLineInterface
   # end
 
  def what_next
-   puts "Okay then what do you want to do next idiot?"
-   puts "1. Go back to show list"
-   puts "2. Leave"
+   puts "What do you want to do next, idiot?"
+   puts "-----------------------------------"
+   line_break
+   puts " 1) Go back to show list"
+   line_break
+   puts " 2) Leave"
+   line_break
    next_step = gets.chomp
     if next_step == "1"
     elsif next_step == "2"
+      bye
       exit
     end
+  line_break
  end
 
 
@@ -211,7 +243,6 @@ class CommandLineInterface
    puts "You are now banned from GitFlix. Goodbye."
    exit
  end
-
 
  def graphic
     music("./Music/The Office.mp3")
@@ -249,6 +280,7 @@ ___ _  _ _ ____    _ ____    ____ _ ___ ____ _    _ _  _    _  _ ____ ___    _  
   end
 
   def bye
+    line_break
     puts "ARE YOU KIDDING ME??????????? GET OUT"
     puts "
 .______   ____    ____  _______  _______  _______  _______  _______  _______
@@ -272,6 +304,21 @@ ___ _  _ _ ____    _ ____    ____ _ ___ ____ _    _ _  _    _  _ ____ ___    _  
  ╚════╝ ╚═╝  ╚═╝    ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚═════╝
 
  "
+  end
+
+  def dun_dun
+    puts "
+
+      ____  _   _ _   _   ____  _   _ _   _   ____  _   _ _   _
+     |  _ `| | | | ` | | |  _ `| | | | ` | | |  _ `| | | | ` | |
+     | | | | | | |  `| | | | | | | | |  `| | | | | | | | |  `| |
+     | |_| | |_| | |`  | | |_| | |_| | |`  | | |_| | |_| | |`  |
+     |____/ `___/|_| `_| |____/ `___/|_| `_| |____/ `___/|_| `_|
+
+
+
+"
+  puts "Well then shut up and pick another show!!!!!!"
   end
 
   def music(file)
